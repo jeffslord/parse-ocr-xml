@@ -1,7 +1,7 @@
 import tabula
 import os
 
-fname = "pdf6"
+fname = "pdfs/pdf6"
 pdfname = fname + ".pdf"
 csvname = fname + ".csv"
 pandas_options = {'header': None}
