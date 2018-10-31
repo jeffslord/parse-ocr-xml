@@ -1,11 +1,11 @@
 class Word:
-    def __init__(self, text, pos0, pos1, pos2, pos3, line=None):
+    def __init__(self, text, pos0:int, pos1:int, pos2:int, pos3:int, line=None):
         self.text = text
         self.setPosition(pos0, pos1, pos2, pos3)
         self.line = line
 
     def __repr__(self):
-        return self.text + ' [' + 'Left:' + self.posLeft + ' Top:' + self.posTop + ' Right:' + self.posRight + ' Bottom:' + self.posBottom + ']'
+        return self.text + ' [' + 'Left:' + str(self.posLeft) + ' Top:' + str(self.posTop) + ' Right:' + str(self.posRight) + ' Bottom:' + str(self.posBottom) + ']'
 
     def setPosition(self, pos0, pos1, pos2, pos3):
         self.posLeft = pos0
@@ -28,11 +28,22 @@ class Word:
 
     @staticmethod
     def tryMergeHorizontal(wordLeft, wordRight, maxDist=50):
+        leftWordMidPoint = int(wordLeft.posTop) + \
+            ((int(wordLeft.posBottom) - int(wordLeft.posTop))/2)
+        rightWordMidPoint = int(wordRight.posTop) + \
+            ((int(wordRight.posBottom) - int(wordRight.posTop))/2)
+        if(int(wordRight.posTop) <= leftWordMidPoint <= int(wordRight.posBottom)):
+            return Word.checkHorizontalDistance(wordLeft, wordRight, maxDist)
+        elif(int(wordLeft.posTop) <= rightWordMidPoint <= int(wordLeft.posBottom)):
+            return Word.checkHorizontalDistance(wordLeft, wordRight, maxDist)
+        else:
+            return False
+
+    @staticmethod
+    def checkHorizontalDistance(wordLeft, wordRight, maxDist):
         distance = abs(int(wordLeft.posRight) - int(wordRight.posLeft))
         if(distance <= maxDist):
             return True
-        else:
-            return False
 
     @staticmethod
     def mergeWords(word1, word2):
@@ -41,8 +52,7 @@ class Word:
         posRight = max(int(word1.posRight), int(word2.posRight))
         posBottom = max(int(word1.posBottom), int(word2.posBottom))
         text = word1.text + ' ' + word2.text
-        newWord = Word(text, str(posLeft), str(posTop),
-                       str(posRight), str(posBottom))
+        newWord = Word(text, posLeft, posTop,posRight,posBottom)
         return newWord
 
     @staticmethod
