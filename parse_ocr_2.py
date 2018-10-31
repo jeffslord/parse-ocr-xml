@@ -9,14 +9,24 @@ import ocr_ops
 
 def main():
     tree = ET.fromstring(getTxt())
+    lines = parseTree(tree)
+    horizontalMergeLines = mergeHorizontal(lines)
+    verticalMergeLines = mergeVertical(horizontalMergeLines)
+    for i in verticalMergeLines:
+        print(i)
+    # print("Number of merges: " + str(mergeCount))
+
+
+def parseTree(tree):
+    # separate all words into
     lines = []
     line = None
     word = None
+    # go through all elements in the hOCR text
+    # make all words and lines into my custom class
     for node in tree.iter():
-        # print(node)
         if('class' in node.attrib):
             cl = ocr_ops.getClass(node)
-            # print(cl)
             if(cl == "ocr_line"):
                 if(line != None and len(line.words) > 0):
                     lines.append(line)
@@ -29,28 +39,89 @@ def main():
                 line.addWord(word)
     if(line != None and len(line.words) > 0):
         lines.append(line)
+    return lines
 
+
+def mergeVertical(lines):
+    mergedLines = []
+    lastMerged = None
+    mergedIndexes = []
+    # loop through all lines, except the last line
+    for i in range(len(lines)-1):
+        mergeLine = Line()
+        # loop through all words in first line
+        for j in range(len(lines[i].words)):
+            word1 = lines[i].words[j]
+            # loop through all words in second line
+            for k in range(len(lines[i+1].words)):
+                word2 = lines[i+1].words[k]
+                print(word1)
+                print(word2)
+                # if word in line1 can merge with line2, do the merge and break out of loop (only 1 merge per word)
+                if(Word.tryMergeVertical(word1, word2)):
+                    newWord = Word.mergeWords(word1, word2)
+                    mergeLine.addWord(newWord)
+                    lastMerged = newWord
+                    mergedIndexes.append((i,j))
+                    mergedIndexes.append((i+1,k))
+                    break
+            # if word has no word to match with, just add the word by itself
+            if(j not in mergedIndexes):
+                mergeLine.addWord(word1)
+    return mergedLines
+
+
+def mergeHorizontal(lines):
     # will this work? who knows, let's find out
+    # go through all lines
+    mergedLines = []
+    mergeCount = 0
     for i in lines:
         # print(i)
         mergeLine = Line()
         mergedIndexes = []
+        # only try to merge if line has more than 1 word
         if(len(i.words) > 1):
+            # go through all words in line, do no process last word because it has no word next to it
             for j in range(len(i.words) - 1):
                 word1 = None
                 word2 = None
+                # check if word is already merged.
+                # if it is, make current word the last merged word
                 if(j in mergedIndexes):
                     word1 = mergeLine.words[-1]
                     word2 = i.words[j+1]
+                # if it isn't merged, check if mergeLine is empty, if it is not, set current word to last added, and new word to next in line
                 else:
-                    word1 = i.words[j]
-                    word2 = i.words[j+1]
+                    if(len(mergeLine.words) > 0):
+                        word1 = mergeLine.words[-1]
+                        word2 = i.words[j+1]
+                    else:
+                        word1 = i.words[j]
+                        word2 = i.words[j+1]
+                # try to see if words will merge
+                # if they will, merge them, add merged word to mergeLine, and add the indexes to mergedIndexes
                 if(Word.tryMergeHorizontal(word1, word2)):
-                    newWord = Word.mergeWords(i.words[j], i.words[j+1])
-                    mergeLine.addWord(newWord)
+                    mergeCount += 1
+                    newWord = Word.mergeWords(word1, word2)
+                    if(word1 in mergeLine.words):
+                        mergeLine.words[-1] = newWord
+                    else:
+                        mergeLine.addWord(newWord)
                     mergedIndexes.append(j)
                     mergedIndexes.append(j+1)
-        i = mergeLine
+                # if they will not merge, add both words separately
+                else:
+                    mergeLine.addWord(word1)
+                    mergeLine.addWord(word2)
+            mergedLines.append(mergeLine)
+        # if there is only 1 word
+        else:
+            if(len(i.words) == 1):
+                mergeLine = Line()
+                mergeLine.addWord(i.words[0])
+                mergedLines.append(mergeLine)
+    return mergedLines
 
 
 def getTxt():

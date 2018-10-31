@@ -27,8 +27,8 @@ class Word:
         self.line = newLine
 
     @staticmethod
-    def tryMergeHorizontal(wordLeft, wordRight, maxDist=4):
-        if(abs(wordLeft.posRight - wordRight.posLeft) < maxDist):
+    def tryMergeHorizontal(wordLeft, wordRight, maxDist=50):
+        if(abs(int(wordLeft.posRight) - int(wordRight.posLeft)) < maxDist):
             return True
         else:
             return False
@@ -45,19 +45,19 @@ class Word:
 
     @staticmethod
     def tryMergeVertical(wordTop, wordBottom, maxDist=4):
-        topWordMidPoint = wordTop.posLeft + \
-            ((wordTop.posRight - wordTop.posLeft)/2)
-        bottomWordMidPoint = wordBottom.posLeft + \
-            ((wordBottom.posRight - wordBottom.posLeft)/2)
-        if(wordBottom.posLeft <= topWordMidPoint <= wordBottom.posRight):
+        topWordMidPoint = int(wordTop.posLeft) + \
+            ((int(wordTop.posRight) - int(wordTop.posLeft))/2)
+        bottomWordMidPoint = int(wordBottom.posLeft) + \
+            ((int(wordBottom.posRight) - int(wordBottom.posLeft))/2)
+        if(int(wordBottom.posLeft) <= topWordMidPoint <= int(wordBottom.posRight)):
             return Word.checkVerticalDistane(wordTop, wordBottom, maxDist)
-        elif(wordTop.posLeft <= bottomWordMidPoint <= wordTop.posRight):
+        elif(int(wordTop.posLeft) <= bottomWordMidPoint <= int(wordTop.posRight)):
             return Word.checkVerticalDistane(wordTop, wordBottom, maxDist)
         else:
             return False
 
     def checkVerticalDistane(self, wordTop, wordBottom, maxDist=4):
-        if(abs(wordTop.posBottom - wordBottom.posTop) < maxDist):
+        if(abs(int(wordTop.posBottom) - int(wordBottom.posTop)) < maxDist):
             return True
         else:
             return False
