@@ -28,36 +28,40 @@ class Word:
 
     @staticmethod
     def tryMergeHorizontal(wordLeft, wordRight, maxDist=50):
-        if(abs(int(wordLeft.posRight) - int(wordRight.posLeft)) < maxDist):
+        distance = abs(int(wordLeft.posRight) - int(wordRight.posLeft))
+        if(distance <= maxDist):
             return True
         else:
             return False
 
     @staticmethod
     def mergeWords(word1, word2):
-        posLeft = min(word1.posLeft, word2.posLeft)
-        posTop = min(word1.posTop, word2.posTop)
-        posRight = max(word1.posRight, word2.posRight)
-        posBottom = max(word1.posBottom, word2.posBottom)
+        posLeft = min(int(word1.posLeft), int(word2.posLeft))
+        posTop = min(int(word1.posTop), int(word2.posTop))
+        posRight = max(int(word1.posRight), int(word2.posRight))
+        posBottom = max(int(word1.posBottom), int(word2.posBottom))
         text = word1.text + ' ' + word2.text
-        newWord = Word(text, posLeft, posTop, posRight, posBottom)
+        newWord = Word(text, str(posLeft), str(posTop),
+                       str(posRight), str(posBottom))
         return newWord
 
     @staticmethod
-    def tryMergeVertical(wordTop, wordBottom, maxDist=4):
+    def tryMergeVertical(wordTop, wordBottom, maxDist=20):
         topWordMidPoint = int(wordTop.posLeft) + \
             ((int(wordTop.posRight) - int(wordTop.posLeft))/2)
         bottomWordMidPoint = int(wordBottom.posLeft) + \
             ((int(wordBottom.posRight) - int(wordBottom.posLeft))/2)
         if(int(wordBottom.posLeft) <= topWordMidPoint <= int(wordBottom.posRight)):
-            return Word.checkVerticalDistane(wordTop, wordBottom, maxDist)
+            return Word.checkVerticalDistance(wordTop, wordBottom, maxDist)
         elif(int(wordTop.posLeft) <= bottomWordMidPoint <= int(wordTop.posRight)):
-            return Word.checkVerticalDistane(wordTop, wordBottom, maxDist)
+            return Word.checkVerticalDistance(wordTop, wordBottom, maxDist)
         else:
             return False
 
-    def checkVerticalDistane(self, wordTop, wordBottom, maxDist=4):
-        if(abs(int(wordTop.posBottom) - int(wordBottom.posTop)) < maxDist):
+    @staticmethod
+    def checkVerticalDistance(wordTop, wordBottom, maxDist):
+        distance = abs(int(wordTop.posBottom) - int(wordBottom.posTop))
+        if(distance < maxDist):
             return True
         else:
             return False

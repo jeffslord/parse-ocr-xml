@@ -12,9 +12,10 @@ def main():
     lines = parseTree(tree)
     horizontalMergeLines = mergeHorizontal(lines)
     verticalMergeLines = mergeVertical(horizontalMergeLines)
+
+    arr = []
     for i in verticalMergeLines:
         print(i)
-    # print("Number of merges: " + str(mergeCount))
 
 
 def parseTree(tree):
@@ -44,7 +45,8 @@ def parseTree(tree):
 
 def mergeVertical(lines):
     mergedLines = []
-    lastMerged = None
+    mergeSource = {}
+
     mergedIndexes = []
     # loop through all lines, except the last line
     for i in range(len(lines)-1):
@@ -52,23 +54,52 @@ def mergeVertical(lines):
         # loop through all words in first line
         for j in range(len(lines[i].words)):
             word1 = lines[i].words[j]
+            # if word1 is already merged, set word1 as the merged word
+            if((i, j) in mergedIndexes):
+                word1 = mergeSource.get((i, j))
+                # print(word1)
             # loop through all words in second line
             for k in range(len(lines[i+1].words)):
                 word2 = lines[i+1].words[k]
-                print(word1)
-                print(word2)
                 # if word in line1 can merge with line2, do the merge and break out of loop (only 1 merge per word)
                 if(Word.tryMergeVertical(word1, word2)):
+                    # print("MERGE")
+                    # print(word1)
+                    # print(word2)
                     newWord = Word.mergeWords(word1, word2)
-                    mergeLine.addWord(newWord)
-                    lastMerged = newWord
-                    mergedIndexes.append((i,j))
-                    mergedIndexes.append((i+1,k))
-                    break
+                    if((i, j) in mergeSource.keys()):
+                        # print("TRUE", mergeSource[i, j])
+                        replaceWord(mergedLines, mergeSource[(i, j)], newWord)
+                        # print("NEED TO REPLACE WORD")
+                        mergeSource[(i, j)] = newWord
+                        # mergeLine.addWord(newWord)
+                        # print("NEW", mergeSource[i, j])
+                    else:
+                        mergeLine.addWord(newWord)
+                        mergedIndexes.append((i, j))
+                        mergeSource[(i, j)] = newWord
+                    mergedIndexes.append((i+1, k))
+                    mergeSource[(i+1, k)] = newWord
+                    # print("I+1", mergeSource[(i+1, k)])
+                    # break
             # if word has no word to match with, just add the word by itself
-            if(j not in mergedIndexes):
+            if((i, j) not in mergedIndexes):
                 mergeLine.addWord(word1)
+        if(len(mergeLine.words) > 0):
+            mergedLines.append(mergeLine)
+    # for k, v in mergeSource.items():
+    #     print(k, "=>", v)
+    # for i in mergedLines:
+    #     print(i)
     return mergedLines
+
+
+def replaceWord(lines, oldWord, newWord):
+    for i in range(len(lines)):
+        for j in range(len(lines[i].words)):
+            if(lines[i].words[j] == oldWord):
+                # print("WORD FOUND")
+                lines[i].words[j] = newWord
 
 
 def mergeHorizontal(lines):
