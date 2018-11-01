@@ -3,9 +3,9 @@ import re
 import json
 import numpy as np
 from ocr_parse_objects import Word
-from ocr_parse_objects import Line
 import ocr_ops
 import pandas as pd
+from pandas import DataFrame
 
 
 def main():
@@ -13,29 +13,100 @@ def main():
     tree = ET.fromstring(getTxt())
     words = parseTreeByWord(tree)
     horizontal = mergeByWord(words, 0)
-    # print("--- Horizontal ---")
-    # for i in horizontal:
-    #     print(i)
     vertical = mergeByWord(horizontal, 1)
-    # print("||| Vertical |||")
-    # for i in vertical:
-    #     print(i)
     sortedWords = sortMergedWords(vertical)
-    # print("*** Sorted ***")
-    # for i in sortedWords:
-    #     print(i)
-    # print()
-    print("$$$ By Line $$$")
+    lines = makeLines(sortedWords)
+    for i in lines:
+        print(i)
+
+    headerIndex = getHeaderRowIndex(lines)
+    tempLines = []
+    for i in lines:
+        if(len(i) > 2):
+            tempLines.append(i)
+    lines = tempLines
+
+    lines = fillEmptyColumns(lines, headerIndex)
+
+    textLines = []
+    for i in lines:
+        textLines.append([])
+        for j in i:
+            textLines[-1].append(j.text)
+
+    writeToFile("output.txt", "", 'w+')
+    df = DataFrame(textLines[1:], columns=textLines[0])
+    print(df)
+    writeToFile("output.txt", str(df) + "\n\n\n")
+    for i in lines:
+        for j in i:
+            print(j)
+            writeToFile("output.txt", str(j.text) + "\n")
+        print()
+        writeToFile("output.txt", "\n")
+
+
+def makeLines(sortedWords):
+    lines = []
+    # print("$$$ By Line $$$")
     for i in range(len(sortedWords)):
         if(i == 0):
-            print("---------- new line ----------")
-            print(sortedWords[i])
+            text = "---------- new line ----------\n" + str(sortedWords[i])
+            # print(text)
+            # writeToFile("output.txt", str(text), 'w+')
+            lines.append([])
+            lines[0].append(sortedWords[i])
             continue
         elif(not Word.checkSameLine(sortedWords[i-1], sortedWords[i])):
-            print()
-            print("---------- new line ----------")
-        print(sortedWords[i])
+            text = "\n\n---------- new line ----------\n"
+            # print(text)
+            # writeToFile("output.txt", str(text))
+            lines.append([])
+        text = str(sortedWords[i]) + "\n"
+        # print(text)
+        # writeToFile("output.txt", str(text))
+        lines[-1].append(sortedWords[i])
+    return lines
 
+
+def fillEmptyColumns(lines, headerIndex):
+    newLines = []
+    for i in range(headerIndex, len(lines)):
+        # go through all words in a specific line
+        columnIndexToWord = {}
+        newLine = []
+        for j in range(len(lines[i])):
+            # compare the words to every word in the header column
+            for k in range(len(lines[headerIndex])):
+                if(Word.checkSameColumn(lines[headerIndex][k], lines[i][j])):
+                    columnIndexToWord[k] = lines[i][j]
+                    break  # break so if there is a 'bad' word that covers multiple columns, only put it in first occurence
+        #     print()
+        # for k, v in columnIndexToWord.items():
+        #     print(str(k) + " => " + str(v))
+
+        for x in range(len(lines[headerIndex])):
+            if(x in columnIndexToWord):
+                newLine.append(columnIndexToWord[x])
+            else:
+                newLine.append(Word("<EMPTY>", 0, 0, 0, 0))
+        newLines.append(newLine)
+    return newLines
+
+
+def getHeaderRowIndex(arrLines):
+    maxIndex = 0
+    maxLength = 0
+    for i in range(len(arrLines)):
+        if(len(arrLines[i]) > maxLength):
+            maxIndex = i
+            maxLength = len(arrLines[i])
+    return maxIndex
+
+
+def writeToFile(path, text, mode='a'):
+    f = open(path, mode)
+    f.write(text)
 
 
 def parseTreeByWord(tree):

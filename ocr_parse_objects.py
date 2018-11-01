@@ -1,5 +1,5 @@
 class Word:
-    def __init__(self, text, pos0:int, pos1:int, pos2:int, pos3:int, line=None):
+    def __init__(self, text, pos0: int, pos1: int, pos2: int, pos3: int, line=None):
         self.text = text
         self.setPosition(pos0, pos1, pos2, pos3)
         self.line = line
@@ -32,6 +32,7 @@ class Word:
             return Word.checkHorizontalDistance(wordLeft, wordRight, maxDist)
         else:
             return False
+
     @staticmethod
     def checkSameLine(wordLeft, wordRight):
         leftWordMidPoint = int(wordLeft.posTop) + \
@@ -58,7 +59,7 @@ class Word:
         posRight = max(int(word1.posRight), int(word2.posRight))
         posBottom = max(int(word1.posBottom), int(word2.posBottom))
         text = word1.text + ' ' + word2.text
-        newWord = Word(text, posLeft, posTop,posRight,posBottom)
+        newWord = Word(text, posLeft, posTop, posRight, posBottom)
         return newWord
 
     @staticmethod
@@ -67,6 +68,7 @@ class Word:
             return Word.checkVerticalDistance(wordTop, wordBottom, maxDist)
         else:
             return False
+
     @staticmethod
     def checkSameColumn(wordTop, wordBottom):
         topWordMidPoint = int(wordTop.posLeft) + \
@@ -79,6 +81,7 @@ class Word:
             return True
         else:
             return False
+
     @staticmethod
     def checkVerticalDistance(wordTop, wordBottom, maxDist):
         distance = abs(int(wordTop.posBottom) - int(wordBottom.posTop))
