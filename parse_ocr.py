@@ -7,44 +7,64 @@ import ocr_ops
 import pandas as pd
 from pandas import DataFrame
 
+# defaults
+# HORIZONTAL_MERGE_DIST = 50
+# VERTICAL_MERGE_DIST = 20
+HORIZONTAL_MERGE_DIST = 35
+VERTICAL_MERGE_DIST = 20
+MIN_REQUIRED_COLUMNS = 3
+
 
 def main():
     # main just calls the other functions and prints things out
-    tree = ET.fromstring(getTxt())
-    words = parseTreeByWord(tree)
-    horizontal = mergeByWord(words, 0)
-    vertical = mergeByWord(horizontal, 1)
-    sortedWords = sortMergedWords(vertical)
-    lines = makeLines(sortedWords)
-    # for i in lines:
-    #     print(i)
+    try:
+        tree = ET.fromstring(getTxt())
+        words = parseTreeByWord(tree)
+        horizontal = mergeByWord(words, 0)
+        vertical = mergeByWord(horizontal, 1)
+        sortedWords = sortMergedWords(vertical)
+        lines = makeLines(sortedWords)
+        lines = getRelevantLines(lines, MIN_REQUIRED_COLUMNS)
+        headerIndex = getHeaderRowIndex(lines)
+        lines = fillEmptyColumns(lines, headerIndex)
+        textLines = wordToText(lines)
 
-    tempLines = []
-    for i in lines:
-        if(len(i) > 2):
-            print(i)
-            tempLines.append(i)
-    lines = tempLines
-    headerIndex = getHeaderRowIndex(lines)
+        df = DataFrame(textLines[1:], columns=textLines[0])
+        print(df)
+        output = ""
+        output += str(df)
+        output += "\n\n\n"
+        for i in textLines:
+            for j in i:
+                output += str(j)
+                output += "\n"
+            output += "\n"
+        writeToFile("output.txt", output, 'w+')
+    except:
+        print("[ERROR] Something went wrong.")
 
-    lines = fillEmptyColumns(lines, headerIndex)
 
+def wordToText(wordList):
+    """
+    Remove bbox info, get array of just text
+    """
     textLines = []
-    for i in lines:
+    for i in wordList:
         textLines.append([])
         for j in i:
             textLines[-1].append(j.text)
+    return textLines
 
-    writeToFile("output.txt", "", 'w+')
-    df = DataFrame(textLines[1:], columns=textLines[0])
-    print(df)
-    writeToFile("output.txt", str(df) + "\n\n\n")
-    for i in lines:
-        for j in i:
-            print(j)
-            writeToFile("output.txt", str(j.text) + "\n")
-        print()
-        writeToFile("output.txt", "\n")
+
+def getRelevantLines(allLines, minRequiredColumns=MIN_REQUIRED_COLUMNS):
+    """
+    Requiring low amount of columns (1-2) will pick up unrelated table data
+    """
+    tempLines = []
+    for i in allLines:
+        if(len(i) >= minRequiredColumns):
+            tempLines.append(i)
+    return tempLines
 
 
 def makeLines(sortedWords):
@@ -52,20 +72,11 @@ def makeLines(sortedWords):
     # print("$$$ By Line $$$")
     for i in range(len(sortedWords)):
         if(i == 0):
-            text = "---------- new line ----------\n" + str(sortedWords[i])
-            # print(text)
-            # writeToFile("output.txt", str(text), 'w+')
             lines.append([])
             lines[0].append(sortedWords[i])
             continue
         elif(not Word.checkSameLine(sortedWords[i-1], sortedWords[i])):
-            text = "\n\n---------- new line ----------\n"
-            # print(text)
-            # writeToFile("output.txt", str(text))
             lines.append([])
-        text = str(sortedWords[i]) + "\n"
-        # print(text)
-        # writeToFile("output.txt", str(text))
         lines[-1].append(sortedWords[i])
     return lines
 
@@ -128,10 +139,9 @@ def parseTreeByWord(tree):
 
 def sortMergedWords(words):
     """
-    once the words have been merged horizontally and vertically, make sure they are sorted correctly. swap words as needed
+    Once the words have been merged horizontally and vertically, make sure they are sorted correctly. swap words as needed
     """
     sortedWords = sorted(words, key=lambda x: (x.posTop, x.posLeft))
-    finalSort = []
     for i in range(len(sortedWords)):
         curWord = sortedWords[i]
         for j in range(i, -1, -1):
@@ -169,9 +179,11 @@ def mergeByWord(originalWords, direction):
                 continue
             mergeSuccessful = False
             if(direction == 0):
-                mergeSuccessful = Word.tryMergeHorizontal(words[i], words[j])
+                mergeSuccessful = Word.tryMergeHorizontal(
+                    words[i], words[j], HORIZONTAL_MERGE_DIST)
             elif(direction == 1):
-                mergeSuccessful = Word.tryMergeVertical(words[i], words[j])
+                mergeSuccessful = Word.tryMergeVertical(
+                    words[i], words[j], VERTICAL_MERGE_DIST)
             if(mergeSuccessful):
                 if(i in mergeDict):
                     newWord = Word.mergeWords(newWords[mergeDict[i]], words[j])
