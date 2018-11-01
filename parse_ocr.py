@@ -24,8 +24,8 @@ def main():
     horizontal = mergeByWord(words, 0)
     vertical = mergeByWord(horizontal, 1)
     sortedWords = sortMergedWords(vertical)
-    for i in sortedWords:
-        print(i)
+    # for i in sortedWords:
+    #     print(i)
     lines = makeLines(sortedWords)
     # for i in lines:
     #     for j in i:
@@ -163,8 +163,7 @@ def sortMergedWords(words):
                 # curIndex = sortedWords.index(curWord)
                 # checkIndex = sortedWords.index(checkWord)
                 sortedWords.insert(checkIndex, sortedWords.pop(curIndex))
-                # sortedWords[curIndex], sortedWords[checkIndex] = swapWords(
-                #     sortedWords, curIndex, checkIndex)
+
     return sortedWords
 
 
