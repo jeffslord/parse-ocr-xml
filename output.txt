@@ -1,13 +1,25 @@
-            Research, Development, Test & Eval, Navy   18,481,666    167,812  18,649,478
-0             Research, Development, Test & Eval, AF   40,178,343    314,271  40,492,614
-1             Research, Development, Test & Eval, DW   22,016,553    500,544  22,517,097
-2                   Operational Test & Eval, Defense      221,009    <EMPTY>     221,009
-3     Total Research, Development, Test & Evaluation  91,056, 950  1,307,731  92,364,681
-4                    Office of the Inspector General        1,602    <EMPTY>       1,602
-5                             Defense Health Program     710, 637    <EMPTY>     710,637
-6                Chem Agents & Munitions Destruction      886,728    <EMPTY>     886,728
-7  Total Not in Research, Development, Test & Eva...    1,598,967    <EMPTY>   1,598,967
+                                       Appropriation FY 2019 Base FY 2019 oco FY 2019 Total
+0           Research, Development, Test & Eval, Army   10,159,379     325,104    10,484,483
+1           Research, Development, Test & Eval, Navy   18,481,666     167,812    18,649,478
+2             Research, Development, Test & Eval, AF   40,178,343     314,271    40,492,614
+3             Research, Development, Test & Eval, DW   22,016,553     500,544    22,517,097
+4                   Operational Test & Eval, Defense      221,009     <EMPTY>       221,009
+5     Total Research, Development, Test & Evaluation  91,056, 950   1,307,731    92,364,681
+6                    Office of the Inspector General        1,602     <EMPTY>         1,602
+7                             Defense Health Program     710, 637     <EMPTY>       710,637
+8                Chem Agents & Munitions Destruction      886,728     <EMPTY>       886,728
+9  Total Not in Research, Development, Test & Eva...    1,598,967     <EMPTY>     1,598,967
 
+
+Appropriation
+FY 2019 Base
+FY 2019 oco
+FY 2019 Total
+
+Research, Development, Test & Eval, Army
+10,159,379
+325,104
+10,484,483
 
 Research, Development, Test & Eval, Navy
 18,481,666

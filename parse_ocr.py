@@ -16,15 +16,16 @@ def main():
     vertical = mergeByWord(horizontal, 1)
     sortedWords = sortMergedWords(vertical)
     lines = makeLines(sortedWords)
-    for i in lines:
-        print(i)
+    # for i in lines:
+    #     print(i)
 
-    headerIndex = getHeaderRowIndex(lines)
     tempLines = []
     for i in lines:
         if(len(i) > 2):
+            print(i)
             tempLines.append(i)
     lines = tempLines
+    headerIndex = getHeaderRowIndex(lines)
 
     lines = fillEmptyColumns(lines, headerIndex)
 
