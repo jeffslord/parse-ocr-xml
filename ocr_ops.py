@@ -17,8 +17,8 @@ def getText(node):
         if(getClass(node) == 'ocrx_word'):
             for child in node.iter():
                 if(child.tag.endswith("em")):
-                    # print(child.text)
                     return child.text
+            return node.text
 
 
 def getClass(node):

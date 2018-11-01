@@ -1,68 +1,98 @@
-                                       Appropriation FY 2019 Base FY 2019 oco FY 2019 Total
-0           Research, Development, Test & Eval, Army   10,159,379     325,104    10,484,483
-1           Research, Development, Test & Eval, Navy   18,481,666     167,812    18,649,478
-2             Research, Development, Test & Eval, AF   40,178,343     314,271    40,492,614
-3             Research, Development, Test & Eval, DW   22,016,553     500,544    22,517,097
-4                   Operational Test & Eval, Defense      221,009     <EMPTY>       221,009
-5     Total Research, Development, Test & Evaluation  91,056, 950   1,307,731    92,364,681
-6                    Office of the Inspector General        1,602     <EMPTY>         1,602
-7                             Defense Health Program     710, 637     <EMPTY>       710,637
-8                Chem Agents & Munitions Destruction      886,728     <EMPTY>       886,728
-9  Total Not in Research, Development, Test & Eva...    1,598,967     <EMPTY>     1,598,967
+                                        Appropriation FY 2017 (Base + OCO) FY 2018 PB Request with CR Adj Base FY 2018 Total PB Requests* with CR Adj Base FY 2018 PB Request with CR Adj oco FY 2018 Total PB Requests+ with CR Adj 0oco
+0            Research, Development, Test & Eval, Army            8,852,507                           8,273,447                                   8,273,447                            342,356                                     342,356
+1            Research, Development, Test & Eval, Navy           17,851,955                          17,116,976                                  17,091,976                            326,537                                     326,537
+2              Research, Development, Test & Eval, AF          28,381, 681                          27,577,477                                  27,577,477                            365,205                                     365,205
+3              Research, Development, Test & Eval, DW           19,542,639                          18,639,241                                  18,639,241                            442,104                                     442,104
+4                    Operational Test & Eval, Defense             188, 654                             184,666                                     184,666                              2,725                                       2,725
+5      Total Research, Development, Test & Evaluation           74,817,436                         71,791, 807                                  71,766,807                          1,478,927                                   1,478,927
+6                     Office of the Inspector General                4,615                               2,800                                       2,800                            <EMPTY>                                     <EMPTY>
+7                              Defense Health Program           2,101, 627                             673,215                                     673,215                            <EMPTY>                                     <EMPTY>
+8                 Chem Agents & Munitions Destruction              515,609                             839,414                                     839,414                            <EMPTY>                                     <EMPTY>
+9                       National Defense Sealift Fund                7,237                              18,622                                      18,622                            <EMPTY>                                     <EMPTY>
+10  Total Not in Research, Development, Test & Eva...            2,629,088                           1,534,051                                   1,534,051                            <EMPTY>                                     <EMPTY>
 
 
 Appropriation
-FY 2019 Base
-FY 2019 oco
-FY 2019 Total
+FY 2017 (Base + OCO)
+FY 2018 PB Request with CR Adj Base
+FY 2018 Total PB Requests* with CR Adj Base
+FY 2018 PB Request with CR Adj oco
+FY 2018 Total PB Requests+ with CR Adj 0oco
 
 Research, Development, Test & Eval, Army
-10,159,379
-325,104
-10,484,483
+8,852,507
+8,273,447
+8,273,447
+342,356
+342,356
 
 Research, Development, Test & Eval, Navy
-18,481,666
-167,812
-18,649,478
+17,851,955
+17,116,976
+17,091,976
+326,537
+326,537
 
 Research, Development, Test & Eval, AF
-40,178,343
-314,271
-40,492,614
+28,381, 681
+27,577,477
+27,577,477
+365,205
+365,205
 
 Research, Development, Test & Eval, DW
-22,016,553
-500,544
-22,517,097
+19,542,639
+18,639,241
+18,639,241
+442,104
+442,104
 
 Operational Test & Eval, Defense
-221,009
-<EMPTY>
-221,009
+188, 654
+184,666
+184,666
+2,725
+2,725
 
 Total Research, Development, Test & Evaluation
-91,056, 950
-1,307,731
-92,364,681
+74,817,436
+71,791, 807
+71,766,807
+1,478,927
+1,478,927
 
 Office of the Inspector General
-1,602
+4,615
+2,800
+2,800
 <EMPTY>
-1,602
+<EMPTY>
 
 Defense Health Program
-710, 637
+2,101, 627
+673,215
+673,215
 <EMPTY>
-710,637
+<EMPTY>
 
 Chem Agents & Munitions Destruction
-886,728
+515,609
+839,414
+839,414
 <EMPTY>
-886,728
+<EMPTY>
+
+National Defense Sealift Fund
+7,237
+18,622
+18,622
+<EMPTY>
+<EMPTY>
 
 Total Not in Research, Development, Test & Evaluation
-1,598,967
+2,629,088
+1,534,051
+1,534,051
 <EMPTY>
-1,598,967
+<EMPTY>
 
