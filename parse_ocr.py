@@ -28,6 +28,11 @@ def main():
     print("||| Vertical |||")
     for i in vertical:
         print(i)
+    sortedWords = sortWords(vertical)
+    print("*** Sorted ***")
+    for i in sortedWords:
+        print(i)
+
 
     # lines = parseTreeByLine(tree)
     # horizontalMergeLines = mergeHorizontal(lines)
@@ -42,6 +47,25 @@ def main():
     #         arr[i].append(verticalMergeLines[i].words[j].text)
     # df = pd.DataFrame(arr)
     # print(df)
+
+def sortWords(words):
+    sortedWords = sorted(words, key=lambda x: (x.posTop, x.posLeft))
+    finalSort = []
+    for i in range(len(sortedWords)):
+        curWord = sortedWords[i]
+        for j in range(i, -1, -1):
+            checkWord = sortedWords[j]
+            if(curWord == checkWord):
+                continue
+            if(Word.checkSameLine(curWord, checkWord) and curWord.posLeft < checkWord.posLeft):
+                curIndex = sortedWords.index(curWord)
+                checkIndex = sortedWords.index(checkWord)
+                sortedWords[curIndex], sortedWords[checkIndex] = swapWords(sortedWords, curIndex, checkIndex)
+    return sortedWords
+
+
+def swapWords(words, index1, index2):
+    return words[index2],words[index1] 
 
 
 def mergeByWord(originalWords, direction):
