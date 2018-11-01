@@ -7,11 +7,6 @@ from ocr_parse_objects import Line
 import ocr_ops
 import pandas as pd
 
-# OCR seems to extract differently. sometimes by lines, sometimes by columns.
-# try... extracting all words, without lines.
-# sort words by left position, try to merge all next? check for vertical position
-# then sort by top position, try to merge all vertically, check for horizontal position
-
 
 def main():
     tree = ET.fromstring(getTxt())
@@ -32,14 +27,14 @@ def main():
     print("$$$ By Line $$$")
     print()
     for i in range(len(sortedWords)):
-        if(i==0):
+        if(i == 0):
+            print("---------- new line ----------")
             print(sortedWords[i])
             continue
         elif(not Word.checkSameLine(sortedWords[i-1], sortedWords[i])):
             print()
             print("---------- new line ----------")
         print(sortedWords[i])
-
 
 
 def parseTreeByWord(tree):
@@ -54,6 +49,7 @@ def parseTreeByWord(tree):
                 words.append(word)
     return words
 
+
 def sortWords(words):
     sortedWords = sorted(words, key=lambda x: (x.posTop, x.posLeft))
     finalSort = []
@@ -66,12 +62,13 @@ def sortWords(words):
             if(Word.checkSameLine(curWord, checkWord) and curWord.posLeft < checkWord.posLeft):
                 curIndex = sortedWords.index(curWord)
                 checkIndex = sortedWords.index(checkWord)
-                sortedWords[curIndex], sortedWords[checkIndex] = swapWords(sortedWords, curIndex, checkIndex)
+                sortedWords[curIndex], sortedWords[checkIndex] = swapWords(
+                    sortedWords, curIndex, checkIndex)
     return sortedWords
 
 
 def swapWords(words, index1, index2):
-    return words[index2],words[index1] 
+    return words[index2], words[index1]
 
 
 def mergeByWord(originalWords, direction):
@@ -164,9 +161,6 @@ def mergeByWord(originalWords, direction):
 #     if(line != None and len(line.words) > 0):
 #         lines.append(line)
 #     return lines
-
-
-
 
 
 # def mergeVertical(lines):
