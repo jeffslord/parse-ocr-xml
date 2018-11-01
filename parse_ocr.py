@@ -15,11 +15,7 @@ import pandas as pd
 
 def main():
     tree = ET.fromstring(getTxt())
-
     words = parseTreeByWord(tree)
-    # wordsSorted = sorted(words, key=lambda x: int(x.posLeft))
-    # for i in wordsSorted:
-    #     print(i)
     horizontal = mergeByWord(words, 0)
     print("--- Horizontal ---")
     for i in horizontal:
@@ -32,21 +28,31 @@ def main():
     print("*** Sorted ***")
     for i in sortedWords:
         print(i)
+    print()
+    print("$$$ By Line $$$")
+    print()
+    for i in range(len(sortedWords)):
+        if(i==0):
+            print(sortedWords[i])
+            continue
+        elif(not Word.checkSameLine(sortedWords[i-1], sortedWords[i])):
+            print()
+            print("---------- new line ----------")
+        print(sortedWords[i])
 
 
-    # lines = parseTreeByLine(tree)
-    # horizontalMergeLines = mergeHorizontal(lines)
-    # verticalMergeLines = mergeVertical(horizontalMergeLines)
-    # for i in verticalMergeLines:
-    #     print(i)
 
-    # arr = []
-    # for i in range(len(verticalMergeLines)):
-    #     arr.append([])
-    #     for j in range(len(verticalMergeLines[i].words)):
-    #         arr[i].append(verticalMergeLines[i].words[j].text)
-    # df = pd.DataFrame(arr)
-    # print(df)
+def parseTreeByWord(tree):
+    words = []
+    for node in tree.iter():
+        if('class' in node.attrib):
+            cl = ocr_ops.getClass(node)
+            if(cl == "ocrx_word"):
+                text = ocr_ops.getText(node)
+                bbox = ocr_ops.getBoundingBox(node)
+                word = Word(text, bbox[0], bbox[1], bbox[2], bbox[3])
+                words.append(word)
+    return words
 
 def sortWords(words):
     sortedWords = sorted(words, key=lambda x: (x.posTop, x.posLeft))
@@ -104,185 +110,175 @@ def mergeByWord(originalWords, direction):
     return newWords
 
 
-def MergeVerticalByWord(originalWords):
-    words = sorted(originalWords, key=lambda x: int(x.posTop))
-    alreadyMerged = []
-    # words Index => newWords Index
-    mergeDict = {}
-    newWords = []
-    mergeCount = 0
-    for i in range(len(words)):
-        for j in range(i, len(words)):
-            if(words[i] == words[j]):
-                continue
-            if(words[i] in alreadyMerged):
-                break
-            if(Word.tryMergeVertical(words[i], words[j])):
-                if(i in mergeDict):
-                    newWord = Word.mergeWords(newWords[mergeDict[i]], words[j])
-                    newWords[mergeDict[i]] = newWord
-                    mergeDict[j] = mergeDict[i]
-                else:
-                    newWord = Word.mergeWords(words[i], words[j])
-                    newWords.append(newWord)
-                    alreadyMerged.append(words[i])
-                    mergeDict[j] = len(newWords)-1
-                mergeCount += 1
-                break
-        newWords.append(words[i])
-    print(mergeCount)
-    return newWords
+# def MergeVerticalByWord(originalWords):
+#     words = sorted(originalWords, key=lambda x: int(x.posTop))
+#     alreadyMerged = []
+#     # words Index => newWords Index
+#     mergeDict = {}
+#     newWords = []
+#     mergeCount = 0
+#     for i in range(len(words)):
+#         for j in range(i, len(words)):
+#             if(words[i] == words[j]):
+#                 continue
+#             if(words[i] in alreadyMerged):
+#                 break
+#             if(Word.tryMergeVertical(words[i], words[j])):
+#                 if(i in mergeDict):
+#                     newWord = Word.mergeWords(newWords[mergeDict[i]], words[j])
+#                     newWords[mergeDict[i]] = newWord
+#                     mergeDict[j] = mergeDict[i]
+#                 else:
+#                     newWord = Word.mergeWords(words[i], words[j])
+#                     newWords.append(newWord)
+#                     alreadyMerged.append(words[i])
+#                     mergeDict[j] = len(newWords)-1
+#                 mergeCount += 1
+#                 break
+#         newWords.append(words[i])
+#     print(mergeCount)
+#     return newWords
 
 
-def parseTreeByLine(tree):
-    # separate all words into
-    lines = []
-    line = None
-    word = None
-    # go through all elements in the hOCR text
-    # make all words and lines into my custom class
-    for node in tree.iter():
-        if('class' in node.attrib):
-            cl = ocr_ops.getClass(node)
-            if(cl == "ocr_line"):
-                if(line != None and len(line.words) > 0):
-                    lines.append(line)
-                    line = None
-                line = Line()
-            if(cl == "ocrx_word"):
-                text = ocr_ops.getText(node)
-                bbox = ocr_ops.getBoundingBox(node)
-                word = Word(text, int(bbox[0]), int(
-                    bbox[1]), int(bbox[2]), int(bbox[3]))
-                line.addWord(word)
-    if(line != None and len(line.words) > 0):
-        lines.append(line)
-    return lines
+# def parseTreeByLine(tree):
+#     # separate all words into
+#     lines = []
+#     line = None
+#     word = None
+#     # go through all elements in the hOCR text
+#     # make all words and lines into my custom class
+#     for node in tree.iter():
+#         if('class' in node.attrib):
+#             cl = ocr_ops.getClass(node)
+#             if(cl == "ocr_line"):
+#                 if(line != None and len(line.words) > 0):
+#                     lines.append(line)
+#                     line = None
+#                 line = Line()
+#             if(cl == "ocrx_word"):
+#                 text = ocr_ops.getText(node)
+#                 bbox = ocr_ops.getBoundingBox(node)
+#                 word = Word(text, int(bbox[0]), int(
+#                     bbox[1]), int(bbox[2]), int(bbox[3]))
+#                 line.addWord(word)
+#     if(line != None and len(line.words) > 0):
+#         lines.append(line)
+#     return lines
 
 
-def parseTreeByWord(tree):
-    words = []
-    for node in tree.iter():
-        if('class' in node.attrib):
-            cl = ocr_ops.getClass(node)
-            if(cl == "ocrx_word"):
-                text = ocr_ops.getText(node)
-                bbox = ocr_ops.getBoundingBox(node)
-                word = Word(text, bbox[0], bbox[1], bbox[2], bbox[3])
-                words.append(word)
-    return words
 
 
-def mergeVertical(lines):
-    mergedLines = []
-    mergeSource = {}
 
-    mergedIndexes = []
-    # loop through all lines, except the last line
-    for i in range(len(lines)-1):
-        mergeLine = Line()
-        # loop through all words in first line
-        for j in range(len(lines[i].words)):
-            word1 = lines[i].words[j]
-            # if word1 is already merged, set word1 as the merged word
-            if((i, j) in mergedIndexes):
-                word1 = mergeSource.get((i, j))
-                # print(word1)
-            # loop through all words in second line
-            for k in range(len(lines[i+1].words)):
-                word2 = lines[i+1].words[k]
-                # if word in line1 can merge with line2, do the merge and break out of loop (only 1 merge per word)
-                if(Word.tryMergeVertical(word1, word2)):
-                    # print("MERGE")
-                    # print(word1)
-                    # print(word2)
-                    newWord = Word.mergeWords(word1, word2)
-                    if((i, j) in mergeSource.keys()):
-                        # print("TRUE", mergeSource[i, j])
-                        replaceWord(mergedLines, mergeSource[(i, j)], newWord)
-                        # print("NEED TO REPLACE WORD")
-                        mergeSource[(i, j)] = newWord
-                        # mergeLine.addWord(newWord)
-                        # print("NEW", mergeSource[i, j])
-                    else:
-                        mergeLine.addWord(newWord)
-                        mergedIndexes.append((i, j))
-                        mergeSource[(i, j)] = newWord
-                    mergedIndexes.append((i+1, k))
-                    mergeSource[(i+1, k)] = newWord
-                    # print("I+1", mergeSource[(i+1, k)])
-                    # break
-            # if word has no word to match with, just add the word by itself
-            if((i, j) not in mergedIndexes):
-                mergeLine.addWord(word1)
-        if(len(mergeLine.words) > 0):
-            mergedLines.append(mergeLine)
-    # for k, v in mergeSource.items():
-    #     print(k, "=>", v)
-    # for i in mergedLines:
-    #     print(i)
-    return mergedLines
+# def mergeVertical(lines):
+#     mergedLines = []
+#     mergeSource = {}
 
-
-def replaceWord(lines, oldWord, newWord):
-    for i in range(len(lines)):
-        for j in range(len(lines[i].words)):
-            if(lines[i].words[j] == oldWord):
-                # print("WORD FOUND")
-                lines[i].words[j] = newWord
+#     mergedIndexes = []
+#     # loop through all lines, except the last line
+#     for i in range(len(lines)-1):
+#         mergeLine = Line()
+#         # loop through all words in first line
+#         for j in range(len(lines[i].words)):
+#             word1 = lines[i].words[j]
+#             # if word1 is already merged, set word1 as the merged word
+#             if((i, j) in mergedIndexes):
+#                 word1 = mergeSource.get((i, j))
+#                 # print(word1)
+#             # loop through all words in second line
+#             for k in range(len(lines[i+1].words)):
+#                 word2 = lines[i+1].words[k]
+#                 # if word in line1 can merge with line2, do the merge and break out of loop (only 1 merge per word)
+#                 if(Word.tryMergeVertical(word1, word2)):
+#                     # print("MERGE")
+#                     # print(word1)
+#                     # print(word2)
+#                     newWord = Word.mergeWords(word1, word2)
+#                     if((i, j) in mergeSource.keys()):
+#                         # print("TRUE", mergeSource[i, j])
+#                         replaceWord(mergedLines, mergeSource[(i, j)], newWord)
+#                         # print("NEED TO REPLACE WORD")
+#                         mergeSource[(i, j)] = newWord
+#                         # mergeLine.addWord(newWord)
+#                         # print("NEW", mergeSource[i, j])
+#                     else:
+#                         mergeLine.addWord(newWord)
+#                         mergedIndexes.append((i, j))
+#                         mergeSource[(i, j)] = newWord
+#                     mergedIndexes.append((i+1, k))
+#                     mergeSource[(i+1, k)] = newWord
+#                     # print("I+1", mergeSource[(i+1, k)])
+#                     # break
+#             # if word has no word to match with, just add the word by itself
+#             if((i, j) not in mergedIndexes):
+#                 mergeLine.addWord(word1)
+#         if(len(mergeLine.words) > 0):
+#             mergedLines.append(mergeLine)
+#     # for k, v in mergeSource.items():
+#     #     print(k, "=>", v)
+#     # for i in mergedLines:
+#     #     print(i)
+#     return mergedLines
 
 
-def mergeHorizontal(lines):
-    # will this work? who knows, let's find out
-    # go through all lines
-    mergedLines = []
-    mergeCount = 0
-    for i in lines:
-        # print(i)
-        mergeLine = Line()
-        mergedIndexes = []
-        # only try to merge if line has more than 1 word
-        if(len(i.words) > 1):
-            # go through all words in line, do no process last word because it has no word next to it
-            for j in range(len(i.words) - 1):
-                word1 = None
-                word2 = None
-                # check if word is already merged.
-                # if it is, make current word the last merged word
-                if(j in mergedIndexes):
-                    word1 = mergeLine.words[-1]
-                    word2 = i.words[j+1]
-                # if it isn't merged, check if mergeLine is empty, if it is not, set current word to last added, and new word to next in line
-                else:
-                    if(len(mergeLine.words) > 0):
-                        word1 = mergeLine.words[-1]
-                        word2 = i.words[j+1]
-                    else:
-                        word1 = i.words[j]
-                        word2 = i.words[j+1]
-                # try to see if words will merge
-                # if they will, merge them, add merged word to mergeLine, and add the indexes to mergedIndexes
-                if(Word.tryMergeHorizontal(word1, word2)):
-                    mergeCount += 1
-                    newWord = Word.mergeWords(word1, word2)
-                    if(word1 in mergeLine.words):
-                        mergeLine.words[-1] = newWord
-                    else:
-                        mergeLine.addWord(newWord)
-                    mergedIndexes.append(j)
-                    mergedIndexes.append(j+1)
-                # if they will not merge, add both words separately
-                else:
-                    mergeLine.addWord(word1)
-                    mergeLine.addWord(word2)
-            mergedLines.append(mergeLine)
-        # if there is only 1 word
-        else:
-            if(len(i.words) == 1):
-                mergeLine = Line()
-                mergeLine.addWord(i.words[0])
-                mergedLines.append(mergeLine)
-    return mergedLines
+# def replaceWord(lines, oldWord, newWord):
+#     for i in range(len(lines)):
+#         for j in range(len(lines[i].words)):
+#             if(lines[i].words[j] == oldWord):
+#                 # print("WORD FOUND")
+#                 lines[i].words[j] = newWord
+
+
+# def mergeHorizontal(lines):
+#     # will this work? who knows, let's find out
+#     # go through all lines
+#     mergedLines = []
+#     mergeCount = 0
+#     for i in lines:
+#         # print(i)
+#         mergeLine = Line()
+#         mergedIndexes = []
+#         # only try to merge if line has more than 1 word
+#         if(len(i.words) > 1):
+#             # go through all words in line, do no process last word because it has no word next to it
+#             for j in range(len(i.words) - 1):
+#                 word1 = None
+#                 word2 = None
+#                 # check if word is already merged.
+#                 # if it is, make current word the last merged word
+#                 if(j in mergedIndexes):
+#                     word1 = mergeLine.words[-1]
+#                     word2 = i.words[j+1]
+#                 # if it isn't merged, check if mergeLine is empty, if it is not, set current word to last added, and new word to next in line
+#                 else:
+#                     if(len(mergeLine.words) > 0):
+#                         word1 = mergeLine.words[-1]
+#                         word2 = i.words[j+1]
+#                     else:
+#                         word1 = i.words[j]
+#                         word2 = i.words[j+1]
+#                 # try to see if words will merge
+#                 # if they will, merge them, add merged word to mergeLine, and add the indexes to mergedIndexes
+#                 if(Word.tryMergeHorizontal(word1, word2)):
+#                     mergeCount += 1
+#                     newWord = Word.mergeWords(word1, word2)
+#                     if(word1 in mergeLine.words):
+#                         mergeLine.words[-1] = newWord
+#                     else:
+#                         mergeLine.addWord(newWord)
+#                     mergedIndexes.append(j)
+#                     mergedIndexes.append(j+1)
+#                 # if they will not merge, add both words separately
+#                 else:
+#                     mergeLine.addWord(word1)
+#                     mergeLine.addWord(word2)
+#             mergedLines.append(mergeLine)
+#         # if there is only 1 word
+#         else:
+#             if(len(i.words) == 1):
+#                 mergeLine = Line()
+#                 mergeLine.addWord(i.words[0])
+#                 mergedLines.append(mergeLine)
+#     return mergedLines
 
 
 def getTxt():
