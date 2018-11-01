@@ -8,19 +8,6 @@ def main():
     return
 
 
-def getUniqueValues(allTextObjects, boxIndex):
-    justified = {}
-    for i in allTextObjects:
-        if i['bbox'][boxIndex] not in justified:
-            justified[i['bbox'][int(boxIndex)]] = [i]
-        else:
-            justified[i['bbox'][boxIndex]].append(i)
-    for key, value in justified.items():
-        a = np.array(value)
-        justified[key] = a.ravel()
-    return justified
-
-
 def getBoundingBox(node):
     return re.findall(r'\d+', getTitle(node))
 
